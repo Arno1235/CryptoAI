@@ -16,7 +16,7 @@ class Binance:
                             'high', 'low', 'close', 'volume', 'close_time', 'quote_av',
                             'trades', 'tb_base_av', 'tb_quote_av', 'ignore']
 
-        self.columns_of_interest = ['open', 'high', 'low', 'close', 'volume']
+        self.columns = ['open', 'high', 'low', 'close', 'volume']
     
     def loadAPI(self):
         with open ("secret.txt", "r") as myfile:
@@ -72,6 +72,10 @@ class Binance:
                                     columns=new_columns)
                 data_df['timestamp'] = pd.to_datetime(data_df['timestamp'], unit='ms')
                 data_df.set_index('timestamp', inplace=True)
+
+                # Dropping everything else besides the columns in self.columns and timestamp
+                data_df.drop(columns=[item + '_' + symbol for item in [item for item in self.org_columns if item not in self.columns]], axis=1, inplace=True)
+
                 data_df.to_csv(".\\binance_data\\" + output_filename)
 
             # move to next step of batches
@@ -100,8 +104,6 @@ if __name__ == "__main__":
     binance = Binance()
 
     from_date = '2021-04-04 00:00:00'
-    # to_date = time.strftime(fmt, time.localtime())
-    # UTC time is 8 hrs ahead of PST
     to_date = '2021-04-04 12:00:00'
     symbol = 'BTCUSDT'
 

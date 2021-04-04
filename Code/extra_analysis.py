@@ -1,40 +1,70 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
-import ta
-from datetime import timedelta
+from tensorflow.python.util.tf_export import SymbolAlreadyExposedError
 plt.style.use("bmh")
 
 
 """
-Runs a 'For' loop to iterate through the length of the DF and create predicted values for every stated interval
-Returns a DF containing the predicted values for the model with the corresponding index values based on a business day frequency
+Plots the loss and accuracy for the training and testing data
 """
-def validater(n_per_in, n_per_out):
-    # Creating an empty DF to store the predictions
-    predictions = pd.DataFrame(index=df.index, columns=[df.columns[0]])
+def visualize_training_results(results):
+    history = results.history
+    plt.figure(figsize=(16,5))
+    plt.plot(history['val_loss'])
+    plt.plot(history['loss'])
+    plt.legend(['val_loss', 'loss'])
+    plt.title('Loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.show()
+    
+    plt.figure(figsize=(16,5))
+    plt.plot(history['val_accuracy'])
+    plt.plot(history['accuracy'])
+    plt.legend(['val_accuracy', 'accuracy'])
+    plt.title('Accuracy')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.show()
 
-    for i in range(n_per_in, len(df)-n_per_in, n_per_out):
-        # Creating rolling intervals to predict off of
-        x = df[-i - n_per_in:-i]
+"""
+Calculates the root mean square error between the two Dataframes
+"""
+def val_rmse(df1, df2, symbol):
+    df = df1.copy()
+    
+    # Adding a new column with the closing prices from the second DF
+    df['close2'] = df2['close_' + symbol]
+    
+    # Dropping the NaN values
+    df.dropna(inplace=True)
+    
+    # Adding another column containing the difference between the two DFs' closing prices
+    df['diff'] = df['close_' + symbol] - df.close2
+    
+    # Squaring the difference and getting the mean
+    rms = (df[['diff']]**2).mean()
+    
+    # Returning the sqaure root of the root mean square
+    return float(np.sqrt(rms))
 
-        # Predicting using rolling intervals
-        yhat = model.predict(np.array(x).reshape(1, n_per_in, n_features))
-
-        # Transforming values back to their normal prices
-        yhat = close_scaler.inverse_transform(yhat)[0]
-
-        # DF to store the values and append later, frequency uses business days
-        pred_df = pd.DataFrame(yhat, 
-                               index=pd.date_range(start=x.index[-1], 
-                                                   periods=len(yhat), 
-                                                   freq="B"),
-                               columns=[x.columns[0]])
-
-        # Updating the predictions DF
-        predictions.update(pred_df)
+def plot_predictionsVSactual(actual, predictions, symbol):
+    # Printing the RMSE
+    print("RMSE:", val_rmse(actual, predictions, symbol))
         
-    return predictions
+    # Plotting
+    plt.figure(figsize=(16,6))
+
+    # Plotting those predictions
+    plt.plot(predictions, label='Predicted')
+
+    # Plotting the actual values
+    plt.plot(actual, label='Actual')
+
+    plt.title(f"Predicted vs Actual Closing Prices")
+    plt.ylabel("Price")
+    plt.legend()
+    plt.show()
 
 
 if __name__ == "__main__":

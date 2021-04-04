@@ -160,13 +160,13 @@ def val_rmse(df1, df2):
     df = df1.copy()
     
     # Adding a new column with the closing prices from the second DF
-    df['close2'] = df2.Close
+    df['close2'] = df2['Close']
     
     # Dropping the NaN values
     df.dropna(inplace=True)
     
     # Adding another column containing the difference between the two DFs' closing prices
-    df['diff'] = df.Close - df.close2
+    df['diff'] = df['Close'] - df.close2
     
     # Squaring the difference and getting the mean
     rms = (df[['diff']]**2).mean()

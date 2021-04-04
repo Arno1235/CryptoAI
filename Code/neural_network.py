@@ -1,6 +1,8 @@
 # Neural Network library
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout
+import pandas as pd
+import numpy as np
 
 
 class NeuralNetwork:
@@ -63,8 +65,8 @@ class NeuralNetwork:
     """
     Fitting and Training Neural Network
     """
-    def trainNN(self, input_X, input_Y):
-        self.model.fit(input_X, input_Y, epochs=50, batch_size=128, validation_split=0.1)
+    def trainNN(self, input_X, input_Y, epochs = 50, batch_size=128, validation_split=0.1):
+        return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, validation_split=validation_split)
     
     """
     Predict Using Neural Network
@@ -72,6 +74,37 @@ class NeuralNetwork:
     def predictionNN(self, input_data):
         # Predicting off of the most recent days from the original DF
         return self.model.predict(input_data)
+    
+    """
+    Runs a 'For' loop to iterate through the length of the DF and create predicted values for every stated interval
+    Returns a DF containing the predicted values for the model with the corresponding index values based on a business day frequency
+    """
+    def validater(self, df, close_scaler):
+
+        # Creating an empty DF to store the predictions
+        predictions = pd.DataFrame(index=df.index, columns=[df.columns[0]])
+
+        for i in range(self.n_per_learn, len(df)-self.n_per_learn, self.n_per_predict):
+            # Creating rolling intervals to predict off of
+            x = df[-i - self.n_per_learn:-i]
+
+            # Predicting using rolling intervals
+            yhat = self.model.predict(np.array(x).reshape(1, self.n_per_learn, self.n_features))
+
+            # Transforming values back to their normal prices
+            yhat = close_scaler.inverse_transform(yhat)[0]
+
+            # DF to store the values and append later, frequency uses minutes
+            pred_df = pd.DataFrame(yhat, 
+                                index=pd.date_range(start=x.index[-1], 
+                                                    periods=len(yhat), 
+                                                    freq="1min"),
+                                columns=[x.columns[0]])
+
+            # Updating the predictions DF
+            predictions.update(pred_df)
+            
+        return predictions
 
 
 if __name__ == "__main__":
