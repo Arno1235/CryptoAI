@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from tensorflow.python.util.tf_export import SymbolAlreadyExposedError
 plt.style.use("bmh")
 
 
