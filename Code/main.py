@@ -4,22 +4,17 @@ from load_data import *
 from neural_network import *
 from notify_user import *
 from place_buy import *
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-from datetime import timedelta
+import datetime
 
+def predictSymbol(symbol, showPlots=False, fmt="%Y-%m-%d %H:%M:%S"):
 
-if __name__ == "__main__":
-    print("running main")
+    binance = Binance(fmt)
 
-    binance = Binance()
+    from_date = datetime.datetime.strptime(datetime.datetime.now(), fmt) - datetime.timedelta(minutes = 125)
+    to_date = datetime.datetime.strptime(datetime.datetime.now(), fmt)
 
-    from_date = '2021-04-04 00:00:00'
-    to_date = '2021-04-04 12:00:00'
-    symbol = 'BTCUSDT'
-
-    #binance.downloadData(symbol=symbol, from_date=from_date, to_date=to_date, output_filename=symbol+".csv")
+    binance.downloadData(symbol=symbol, from_date=from_date, to_date=to_date, output_filename=symbol+".csv")
 
     n_per_learn = 90
     n_per_predict = 30
@@ -33,8 +28,18 @@ if __name__ == "__main__":
 
     result = neuralNetwork.trainNN(input_X, input_Y)
 
-    visualize_training_results(result)
+    if showPlots: visualize_training_results(result)
 
     prediction = neuralNetwork.predictionNN(np.array(df.tail(n_per_learn)).reshape(1, n_per_learn, n_features))
-    
-    plotPrediction(prediction, df, close_scaler, binance.fmt)
+    prediction = scalePrediction(prediction, df, close_scaler, fmt)
+    if showPlots: plotPrediction(prediction, df, fmt)
+
+if __name__ == "__main__":
+    print("running main")
+
+    symbol_list = ['BTCUSDT']
+
+    while True:
+        for symbol in symbol_list:
+            predictSymbol(symbol, showPlots=True)
+        break
