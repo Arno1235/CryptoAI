@@ -1,3 +1,6 @@
 
 Code/secret.txt
 Code/binance_data
+__pycache__
+Code/__pycache__
+Code/old/__pycache__
