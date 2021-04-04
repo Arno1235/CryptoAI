@@ -68,21 +68,22 @@ def plot_predictionsVSactual(actual, predictions, symbol):
     plt.legend()
     plt.show()
 
-def plotPrediction(prediction, df, close_scaler, fmt):
+def scalePrediction(prediction, df, close_scaler, fmt):
     # Transforming the predicted values back to their original format
     prediction = close_scaler.inverse_transform(prediction)[0]
 
     # Creating a DF of the predicted prices
-    preds = pd.DataFrame(prediction, 
+    return pd.DataFrame(prediction, 
                         index=pd.date_range(start=datetime.datetime.strptime(df.index[-1], fmt) + datetime.timedelta(minutes=1),
                                             periods=len(prediction),
                                             freq="1min"),
                         columns=[df.columns[0]])
-    
+
+def plotPrediction(preds, df, fmt):
     print(preds)
 
     plt.plot(preds, label='Prediction')
-    plt.title("Prediction for " + str(datetime.datetime.strptime(df.index[-1], fmt) + datetime.timedelta(minutes=1)) + " until " + str(datetime.datetime.strptime(df.index[-1], fmt) + datetime.timedelta(minutes=len(prediction))))
+    plt.title("Prediction for " + str(datetime.datetime.strptime(df.index[-1], fmt) + datetime.timedelta(minutes=1)) + " until " + str(datetime.datetime.strptime(df.index[-1], fmt) + datetime.timedelta(minutes=len(preds))))
     plt.show()
 
 
