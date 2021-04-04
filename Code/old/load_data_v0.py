@@ -184,3 +184,6 @@ if __name__ == '__main__':
     master_output_filename = 'crypto_data_master_cleaned.csv'
     append_binance_data(master_output_filename, concat_output_filename)
     remove_dup_by_index(master_output_filename)
+
+if __name__ == "__main__":
+    print("running load_data")
