@@ -1,5 +1,4 @@
 import pandas as pd
-import os
 import time
 from binance.client import Client
 from datetime import timedelta, datetime
