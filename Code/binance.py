@@ -32,7 +32,7 @@ class Binance:
         if pause == 0 --> no sleep
         if pause == num--> sleep for num of seconds
     """
-    def downloadData(self, symbol, from_date, to_date, output_filename="output.txt", step=1, pause=-1, simulate=False):
+    def downloadData(self, symbol, from_date, to_date, time_interval=Client.KLINE_INTERVAL_1MINUTE, output_filename="output.csv", step=1, pause=-1, simulate=False):
         from_date_obj = datetime.strptime(from_date, self.fmt)
         step_date_obj = from_date_obj + timedelta(days=step)
         step_date = step_date_obj.strftime(self.fmt)
@@ -52,7 +52,7 @@ class Binance:
             if not simulate:
                 # download data
 
-                klines = self.client.get_historical_klines(symbol, Client.KLINE_INTERVAL_1MINUTE,
+                klines = self.client.get_historical_klines(symbol, time_interval,
                                                             from_millis_str, end_str=step_millis_str)
                 klines_len = len(klines)
                 if klines_len == 0:
@@ -72,7 +72,7 @@ class Binance:
                                     columns=new_columns)
                 data_df['timestamp'] = pd.to_datetime(data_df['timestamp'], unit='ms')
                 data_df.set_index('timestamp', inplace=True)
-                data_df.to_csv(output_filename)
+                data_df.to_csv(".\\binance_data\\" + output_filename)
 
             # move to next step of batches
             from_millis = step_millis
@@ -105,4 +105,4 @@ if __name__ == "__main__":
     to_date = '2021-04-04 12:00:00'
     symbol = 'BTCUSDT'
 
-    binance.downloadData(symbol=symbol, from_date=from_date, to_date=to_date)
+    binance.downloadData(symbol=symbol, from_date=from_date, to_date=to_date, output_filename=symbol+".csv")
