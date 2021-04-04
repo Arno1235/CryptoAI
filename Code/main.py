@@ -11,8 +11,8 @@ def predictSymbol(symbol, showPlots=False, fmt="%Y-%m-%d %H:%M:%S"):
 
     binance = Binance(fmt)
 
-    from_date = datetime.datetime.strptime(datetime.datetime.now(), fmt) - datetime.timedelta(minutes = 125)
-    to_date = datetime.datetime.strptime(datetime.datetime.now(), fmt)
+    from_date = datetime.datetime.strftime(datetime.datetime.now() - datetime.timedelta(hours = 10), fmt) # hours = 4
+    to_date = datetime.datetime.strftime(datetime.datetime.now(), fmt)
 
     binance.downloadData(symbol=symbol, from_date=from_date, to_date=to_date, output_filename=symbol+".csv")
 
