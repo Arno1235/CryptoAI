@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from pandas._libs.tslibs import Timedelta
 plt.style.use("bmh")
+import pandas as pd
+import datetime
 
 
 """
@@ -63,6 +66,23 @@ def plot_predictionsVSactual(actual, predictions, symbol):
     plt.title(f"Predicted vs Actual Closing Prices")
     plt.ylabel("Price")
     plt.legend()
+    plt.show()
+
+def plotPrediction(prediction, df, close_scaler, fmt):
+    # Transforming the predicted values back to their original format
+    prediction = close_scaler.inverse_transform(prediction)[0]
+
+    # Creating a DF of the predicted prices
+    preds = pd.DataFrame(prediction, 
+                        index=pd.date_range(start=datetime.datetime.strptime(df.index[-1], fmt) + datetime.timedelta(minutes=1),
+                                            periods=len(prediction),
+                                            freq="1min"),
+                        columns=[df.columns[0]])
+    
+    print(preds)
+
+    plt.plot(preds, label='Prediction')
+    plt.title("Prediction for " + str(datetime.datetime.strptime(df.index[-1], fmt) + datetime.timedelta(minutes=1)) + " until " + str(datetime.datetime.strptime(df.index[-1], fmt) + datetime.timedelta(minutes=len(prediction))))
     plt.show()
 
 

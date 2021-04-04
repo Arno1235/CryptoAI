@@ -35,25 +35,6 @@ if __name__ == "__main__":
 
     visualize_training_results(result)
 
-    actual = getActualData(close_scaler, df, symbol)
-
-    # Getting a DF of the predicted values to validate against
-    predictions = neuralNetwork.validater(df, close_scaler)
-
-    plot_predictionsVSactual(actual, predictions, symbol)
-
     prediction = neuralNetwork.predictionNN(np.array(df.tail(n_per_learn)).reshape(1, n_per_learn, n_features))
-    # Transforming the predicted values back to their original format
-    prediction = close_scaler.inverse_transform(prediction)[0]
-
-    # Creating a DF of the predicted prices
-    preds = pd.DataFrame(prediction, 
-                        index=pd.date_range(start=df.index[-1], 
-                                            periods=len(prediction), 
-                                            freq="1min"), 
-                        columns=[df.columns[0]])
     
-    print(preds)
-
-    plt.plot(preds)
-    plt.show()
+    plotPrediction(prediction, df, close_scaler, binance.fmt)
