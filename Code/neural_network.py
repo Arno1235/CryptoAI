@@ -64,7 +64,7 @@ class NeuralNetwork:
         self.model.fit(X, y, epochs=50, batch_size=128, validation_split=0.1)
     
     """
-    Predict future 
+    Predict future prices 
     """
     def predictionNN(self):
         # Predicting off of the most recent days from the original DF
