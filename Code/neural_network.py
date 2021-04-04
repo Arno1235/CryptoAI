@@ -3,92 +3,73 @@ from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout
 
 
-"""
-Creates a specified number of hidden layers for an RNN
-Optional: Adds regularization option - the dropout layer to prevent potential overfitting (if necessary)
-"""
-def layer_maker(n_layers, n_nodes, activation, drop=None, d_rate=.5):
-    # Creating the specified number of hidden layers with the specified number of nodes
-    for x in range(1,n_layers+1):
-        model.add(LSTM(n_nodes, activation=activation, return_sequences=True))
+class NeuralNetwork:
 
-        # Adds a Dropout layer after every Nth hidden layer (the 'drop' variable)
-        try:
-            if x % drop == 0:
-                model.add(Dropout(d_rate))
-        except:
-            pass
+    def __init__(self, crypto, n_layers, n_nodes):
+        self.crypto = crypto
+        self.n_layers = n_layers
+        self.n_nodes = n_nodes
+        self.activation = "tanh"
 
-"""
-Runs a 'For' loop to iterate through the length of the DF and create predicted values for every stated interval
-Returns a DF containing the predicted values for the model with the corresponding index values based on a business day frequency
-"""
-def validater(n_per_in, n_per_out):
-    # Creating an empty DF to store the predictions
-    predictions = pd.DataFrame(index=df.index, columns=[df.columns[0]])
+        self.createNN()
+    
+    """
+    Creating the Neural Network
+    """
+    def createNN(self):
+        # Instatiating the model
+        self.model = Sequential()
 
-    for i in range(n_per_in, len(df)-n_per_in, n_per_out):
-        # Creating rolling intervals to predict off of
-        x = df[-i - n_per_in:-i]
+        # Input layer
+        self.model.add(LSTM(90, 
+                    activation=self.activation, 
+                    return_sequences=True, 
+                    input_shape=(n_per_in, n_features)))
 
-        # Predicting using rolling intervals
-        yhat = model.predict(np.array(x).reshape(1, n_per_in, n_features))
+        # Hidden layers
+        self.layer_maker()
 
-        # Transforming values back to their normal prices
-        yhat = close_scaler.inverse_transform(yhat)[0]
+        # Final Hidden layer
+        self.model.add(LSTM(60, activation=self.activation))
 
-        # DF to store the values and append later, frequency uses business days
-        pred_df = pd.DataFrame(yhat, 
-                               index=pd.date_range(start=x.index[-1], 
-                                                   periods=len(yhat), 
-                                                   freq="B"),
-                               columns=[x.columns[0]])
+        # Output layer
+        self.model.add(Dense(n_per_out))
 
-        # Updating the predictions DF
-        predictions.update(pred_df)
-        
-    return predictions
+        # Model summary
+        self.model.summary()
 
-"""
-Creating the Neural Network
-"""
-def createNN():
-    # Instatiating the model
-    model = Sequential()
+        # Compiling the data with selected specifications
+        self.model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
 
-    # Activation
-    activ = "tanh"
+    """
+    Creates a specified number of hidden layers for an RNN
+    Optional: Adds regularization option - the dropout layer to prevent potential overfitting (if necessary)
+    """
+    def layer_maker(self, drop=None, d_rate=.5):
+        # Creating the specified number of hidden layers with the specified number of nodes
+        for x in range(1, self.n_layers+1):
+            self.model.add(LSTM(self.n_nodes, activation=self.activation, return_sequences=True))
 
-    # Input layer
-    model.add(LSTM(90, 
-                activation=activ, 
-                return_sequences=True, 
-                input_shape=(n_per_in, n_features)))
+            # Adds a Dropout layer after every Nth hidden layer (the 'drop' variable)
+            try:
+                if x % drop == 0:
+                    self.model.add(Dropout(d_rate))
+            except:
+                pass
+    
+    """
+    Fitting and Training Neural Network
+    """
+    def trainNN(self):
+        self.model.fit(X, y, epochs=50, batch_size=128, validation_split=0.1)
+    
+    """
+    Predict future 
+    """
+    def predictionNN(self):
+        # Predicting off of the most recent days from the original DF
+        self.model.predict(np.array(df.tail(n_per_in)).reshape(1, n_per_in, n_features))
 
-    # Hidden layers
-    layer_maker(n_layers=1, 
-                n_nodes=30, 
-                activation=activ)
-
-    # Final Hidden layer
-    model.add(LSTM(60, activation=activ))
-
-    # Output layer
-    model.add(Dense(n_per_out))
-
-    # Model summary
-    model.summary()
-
-    # Compiling the data with selected specifications
-    model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
-
-    return model
-
-"""
-Fitting and Training Neural Network
-"""
-def trainNN(model):
-    res = model.fit(X, y, epochs=100, batch_size=256, validation_split=0.1) # original: 50, 128, 0.1
 
 if __name__ == "__main__":
     print("running neural_network")
