@@ -7,10 +7,10 @@ import time
 
 class Binance:
 
-    def __init__(self):
+    def __init__(self, fmt):
         self.loadAPI()
         self.client = Client(api_key=self.api_key, api_secret=self.api_secret)
-        self.fmt = "%Y-%m-%d %H:%M:%S"  # e.g. 2019-11-16 23:16:15
+        self.fmt = fmt
 
         self.org_columns = ['open',
                             'high', 'low', 'close', 'volume', 'close_time', 'quote_av',
