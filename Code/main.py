@@ -38,9 +38,9 @@ if __name__ == "__main__":
     actual = getActualData(close_scaler, df, symbol)
 
     # Getting a DF of the predicted values to validate against
-    #predictions = neuralNetwork.validater(df, close_scaler)
+    predictions = neuralNetwork.validater(df, close_scaler)
 
-    #plot_predictionsVSactual(actual, predictions, symbol)
+    plot_predictionsVSactual(actual, predictions, symbol)
 
     prediction = neuralNetwork.predictionNN(np.array(df.tail(n_per_learn)).reshape(1, n_per_learn, n_features))
     # Transforming the predicted values back to their original format
