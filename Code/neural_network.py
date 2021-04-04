@@ -5,10 +5,13 @@ from keras.layers import LSTM, Dense, Dropout
 
 class NeuralNetwork:
 
-    def __init__(self, crypto, n_layers, n_nodes):
+    def __init__(self, crypto, n_layers, n_nodes, n_per_learn, n_per_predict, n_features):
         self.crypto = crypto
         self.n_layers = n_layers
         self.n_nodes = n_nodes
+        self.n_per_learn = n_per_learn
+        self.n_per_predict = n_per_predict
+        self.n_features = n_features
         self.activation = "tanh"
 
         self.createNN()
@@ -24,7 +27,7 @@ class NeuralNetwork:
         self.model.add(LSTM(90, 
                     activation=self.activation, 
                     return_sequences=True, 
-                    input_shape=(n_per_in, n_features)))
+                    input_shape=(self.n_per_learn, self.n_features)))
 
         # Hidden layers
         self.layer_maker()
@@ -33,7 +36,7 @@ class NeuralNetwork:
         self.model.add(LSTM(60, activation=self.activation))
 
         # Output layer
-        self.model.add(Dense(n_per_out))
+        self.model.add(Dense(self.n_per_predict))
 
         # Model summary
         self.model.summary()
@@ -60,15 +63,15 @@ class NeuralNetwork:
     """
     Fitting and Training Neural Network
     """
-    def trainNN(self):
-        self.model.fit(X, y, epochs=50, batch_size=128, validation_split=0.1)
+    def trainNN(self, input_X, input_Y):
+        self.model.fit(input_X, input_Y, epochs=50, batch_size=128, validation_split=0.1)
     
     """
-    Predict future prices 
+    Predict Using Neural Network
     """
-    def predictionNN(self):
+    def predictionNN(self, input_data):
         # Predicting off of the most recent days from the original DF
-        self.model.predict(np.array(df.tail(n_per_in)).reshape(1, n_per_in, n_features))
+        return self.model.predict(input_data)
 
 
 if __name__ == "__main__":
