@@ -1,9 +1,9 @@
 check	binance.py
 chech	data_manipulation_functions.py
-
-neural_network.py
+check	neural_network.py
 
 extra_analysis.py
+
 interpret_data.py
 place_buy.py
 notify_user.py
