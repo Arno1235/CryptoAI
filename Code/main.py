@@ -1,9 +1,11 @@
 from binance import *
 from data_manipulation_functions import *
+from neural_network import *
+from extra_analysis import *
 
 import numpy as np
 
-def predictSymbol(symbol, showPlots=False, fmt="%Y-%m-%d %H:%M:%S"):
+def predictSymbol(symbol, showPlots=False):
 
     binance = Binance(symbol)
 
@@ -18,15 +20,15 @@ def predictSymbol(symbol, showPlots=False, fmt="%Y-%m-%d %H:%M:%S"):
     n_layers = 1
     n_nodes = 30
 
-    neuralNetwork = NeuralNetwork(symbol, n_layers, n_nodes, n_per_learn, n_per_predict, n_features)
+    neuralNetwork = NeuralNetwork(n_layers, n_nodes, n_per_learn, n_per_predict, binance.n_features)
 
     result = neuralNetwork.trainNN(input_X, input_Y)
 
     if showPlots: visualize_training_results(result)
 
-    prediction = neuralNetwork.predictionNN(np.array(df.tail(n_per_learn)).reshape(1, n_per_learn, n_features))
-    prediction = scalePrediction(prediction, df, close_scaler, fmt)
-    if showPlots: plotPrediction(prediction, df, fmt)
+    prediction = neuralNetwork.predictionNN(np.array(binance.df.tail(n_per_learn)).reshape(1, n_per_learn, binance.n_features))
+    prediction = scalePrediction(prediction, binance.df, binance.close_scaler)
+    if showPlots: plotPrediction(prediction, binance.df)
 
 if __name__ == "__main__":
     print("running main")
