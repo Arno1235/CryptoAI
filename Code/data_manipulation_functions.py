@@ -3,7 +3,7 @@ import numpy as np
 """
 Splits the multivariate time sequence
 """
-def split_sequence(seq, n_steps_in, n_steps_out):
+def split_sequence(seq, n_per_learn, n_per_predict):
 
     # Creating a list for both variables
     input_X, input_Y = [], []
@@ -11,8 +11,8 @@ def split_sequence(seq, n_steps_in, n_steps_out):
     for i in range(len(seq)):
         
         # Finding the end of the current sequence
-        end = i + n_steps_in
-        out_end = end + n_steps_out
+        end = i + n_per_learn
+        out_end = end + n_per_predict
         
         # Breaking out of the loop if we have exceeded the dataset's length
         if out_end > len(seq):
