@@ -1,5 +1,9 @@
 from binance_mod.client import Client
 import pandas as pd
+import ta
+from sklearn.preprocessing import RobustScaler
+
+
 
 class Binance:
 
@@ -44,12 +48,30 @@ class Binance:
             return
         print("Succesfully downloaded %s lines of data from %s for %s" % (str(len(klines)), self.symbol, hours_ago))
 
-        self.df = pd.DataFrame(klines, columns=self.org_columns)
-        self.df['timestamp'] = pd.to_datetime(self.df['timestamp'], unit='ms')
-        self.df.set_index('timestamp', inplace=True)
-        self.df.drop(columns=[item for item in self.org_columns if item not in self.imp_columns], axis=1, inplace=True)
-    
-    
+        self.df_org = pd.DataFrame(klines, columns=self.org_columns)
+        self.df_org['timestamp'] = pd.to_datetime(self.df_org['timestamp'], unit='ms')
+        self.df_org.set_index('timestamp', inplace=True)
+        self.df_org.drop(columns=[item for item in self.org_columns if item not in self.imp_columns], axis=1, inplace=True)
+        self.df_org.dropna(inplace=True)
+
+        self.df = self.df_org.copy(deep=True)
+
+        # Adding all the Technical Indicators
+        self.df = ta.add_all_ta_features(self.df, open="open", high="high", low="low", close="close", volume="volume", fillna=True)
+        # Dropping everything else besides 'Close' and the Indicators
+        self.df.drop(["open", "high", "low", "volume"], axis=1, inplace=True)
+        # Scale fitting the close prices separately for inverse_transformations purposes later
+        self.close_scaler = RobustScaler()
+        self.close_scaler.fit(self.df[["close"]])
+
+        # Normalizing/Scaling the DF
+        self.scaler = RobustScaler()
+
+        self.df = pd.DataFrame(self.scaler.fit_transform(self.df), columns=self.df.columns, index=self.df.index)
+
+        # Features
+        self.n_features = self.df.shape[1]
+
 
 
 if __name__ == "__main__":
