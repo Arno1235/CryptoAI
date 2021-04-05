@@ -8,10 +8,11 @@ from sklearn.preprocessing import RobustScaler
 
 class Binance:
 
-    def __init__(self, symbol):
+    def __init__(self, symbol, ask_buy=True):
         self.loadAPISecret()
         self.client = Client(api_key=self.api_key, api_secret=self.api_secret)
         self.symbol = symbol
+        self.ask_buy = ask_buy
 
         self.org_columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time', 'quote_av', 'trades', 'tb_base_av', 'tb_quote_av', 'ignore']
         self.imp_columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
@@ -72,6 +73,15 @@ class Binance:
         self.n_features = self.df.shape[1]
 
         if os.path.exists("temp.csv"): os.remove("temp.csv")
+    
+    def placeBuy(self):
+        print("Buy info")
+        if self.ask_buy:
+            if input("Are you sure I can place the buy?\n") != "yes":
+                print("Buy canceled")
+                return
+
+        print("Buy")
 
 
 
@@ -104,3 +114,5 @@ if __name__ == "__main__":
 
     binance.getTrades()
     print(binance.trades)
+
+    binance.placeBuy()
