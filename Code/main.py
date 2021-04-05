@@ -1,11 +1,7 @@
 from binance import *
-from extra_analysis import *
 from data_manipulation_functions import *
-from neural_network import *
-from notify_user import *
-from place_buy import *
+
 import numpy as np
-import datetime
 
 def predictSymbol(symbol, showPlots=False, fmt="%Y-%m-%d %H:%M:%S"):
 
