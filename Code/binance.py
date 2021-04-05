@@ -1,4 +1,5 @@
 from binance_mod.client import Client
+import os
 import pandas as pd
 import ta
 from sklearn.preprocessing import RobustScaler
@@ -55,23 +56,22 @@ class Binance:
         self.df_org.dropna(inplace=True)
 
     def scaleData(self):
-        self.df = self.df_org.copy(deep=True)
+        self.df_org.to_csv("temp.csv")
+        self.df = pd.read_csv("temp.csv")
+        self.df.set_index('timestamp', inplace=True)
 
-        # Adding all the Technical Indicators
-        self.df = ta.add_all_ta_features(self.df, open="open", high="high", low="low", close="close", volume="volume", fillna=True)
-        # Dropping everything else besides 'Close' and the Indicators
+        self.df = ta.add_all_ta_features(self.df, open='open', high='high', low='low', close='close', volume='volume', fillna=True)
         self.df.drop(["open", "high", "low", "volume"], axis=1, inplace=True)
-        # Scale fitting the close prices separately for inverse_transformations purposes later
+
         self.close_scaler = RobustScaler()
         self.close_scaler.fit(self.df[["close"]])
 
-        # Normalizing/Scaling the DF
         self.scaler = RobustScaler()
-
         self.df = pd.DataFrame(self.scaler.fit_transform(self.df), columns=self.df.columns, index=self.df.index)
 
-        # Features
         self.n_features = self.df.shape[1]
+
+        if os.path.exists("temp.csv"): os.remove("temp.csv")
 
 
 
@@ -81,6 +81,9 @@ if __name__ == "__main__":
     binance = Binance(symbol="BTCEUR")
 
     binance.getData(1)
+    print(binance.df_org)
+
+    binance.scaleData()
     print(binance.df)
 
     binance.getAccountInfo()
