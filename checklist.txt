@@ -1,6 +1,8 @@
 check	binance.py
-load_data.py
+chech	data_manipulation_functions.py
+
 neural_network.py
+
 extra_analysis.py
 interpret_data.py
 place_buy.py
