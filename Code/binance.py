@@ -1,5 +1,5 @@
 from binance_mod.client import Client
-from datetime import datetime, timedelta
+import pandas as pd
 
 class Binance:
 
@@ -8,6 +8,9 @@ class Binance:
         self.client = Client(api_key=self.api_key, api_secret=self.api_secret)
         self.fmt = fmt
         self.symbol = symbol
+
+        self.org_columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time', 'quote_av', 'trades', 'tb_base_av', 'tb_quote_av', 'ignore']
+        self.imp_columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
     
     def loadAPISecret(self):
         with open ("secret.txt", "r") as myfile:
@@ -20,9 +23,15 @@ class Binance:
         klines = self.client.get_historical_klines(self.symbol, time_interval, hours)
         if len(klines) < 1:
             print("Failed to download data from %s for %s." % (self.symbol, hours))
-        else:
-            print("Succesfully downloaded %s lines of data from %s for %s" % (str(len(klines)), self.symbol, hours))
+            return
+        print("Succesfully downloaded %s lines of data from %s for %s" % (str(len(klines)), self.symbol, hours))
+
+        self.df = pd.DataFrame(klines, columns=self.org_columns)
+        self.df['timestamp'] = pd.to_datetime(self.df['timestamp'], unit='ms')
+        self.df.set_index('timestamp', inplace=True)
+        self.df.drop(columns=[item for item in self.org_columns if item not in self.imp_columns], axis=1, inplace=True)
         
+        print(self.df)
 
 
 if __name__ == "__main__":
