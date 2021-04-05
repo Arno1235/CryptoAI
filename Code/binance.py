@@ -54,6 +54,7 @@ class Binance:
         self.df_org.drop(columns=[item for item in self.org_columns if item not in self.imp_columns], axis=1, inplace=True)
         self.df_org.dropna(inplace=True)
 
+    def scaleData(self):
         self.df = self.df_org.copy(deep=True)
 
         # Adding all the Technical Indicators
