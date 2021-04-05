@@ -28,7 +28,7 @@ def predictSymbol(symbol, showPlots=False):
 
     prediction = neuralNetwork.predictionNN(np.array(binance.df.tail(n_per_learn)).reshape(1, n_per_learn, binance.n_features))
     prediction = scalePrediction(prediction, binance.df, binance.close_scaler)
-    if showPlots: plotPrediction(prediction, binance.df)
+    if showPlots: plotPrediction(prediction)
 
 if __name__ == "__main__":
     print("running main")
