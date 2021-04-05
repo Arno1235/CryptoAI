@@ -22,7 +22,7 @@ def loadData(csv_file, symbol, n_per_learn, n_per_predict):
     df = ta.add_all_ta_features(df, open="open_" + symbol, high="high_" + symbol, low="low_" + symbol, close="close_" + symbol, volume="volume_" + symbol, fillna=True)
 
     # Dropping everything else besides 'Close' and the Indicators
-    df.drop(["open_" + symbol, "high_" + symbol, "low_" + symbol, "volume_" + symbol], axis=1, inplace=True)
+    df.drop([["open_" + symbol, "high_" + symbol, "low_" + symbol, "volume_" + symbol]], axis=1, inplace=True)
 
     ## Scaling
 
