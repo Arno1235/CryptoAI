@@ -21,7 +21,7 @@ class Binance:
         if len(klines) < 1:
             print("Failed to download data from %s for %s." % (self.symbol, hours))
         else:
-            print("Succesfully downloaded data from %s for %s" % (self.symbol, hours))
+            print("Succesfully downloaded %s lines of data from %s for %s" % (str(len(klines)), self.symbol, hours))
         
 
 
@@ -30,4 +30,4 @@ if __name__ == "__main__":
 
     binance = Binance("", "BTCEUR")
 
-    binance.getData(4)
+    binance.getData(1)
