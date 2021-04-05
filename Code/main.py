@@ -1,6 +1,6 @@
 from binance import *
 from extra_analysis import *
-from load_data import *
+from data_manipulation_functions import *
 from neural_network import *
 from notify_user import *
 from place_buy import *
@@ -9,17 +9,15 @@ import datetime
 
 def predictSymbol(symbol, showPlots=False, fmt="%Y-%m-%d %H:%M:%S"):
 
-    binance = Binance(fmt)
+    binance = Binance(symbol)
 
-    from_date = datetime.datetime.strftime(datetime.datetime.now() - datetime.timedelta(hours = 10), fmt) # hours = 4
-    to_date = datetime.datetime.strftime(datetime.datetime.now(), fmt)
-
-    binance.downloadData(symbol=symbol, from_date=from_date, to_date=to_date, output_filename=symbol+".csv")
+    binance.getData(6)
+    binance.scaleData()
 
     n_per_learn = 90
     n_per_predict = 30
 
-    df, n_features, input_X, input_Y, close_scaler = loadData(".\\binance_data\\" + symbol + ".csv", symbol, n_per_learn, n_per_predict)
+    input_X, input_Y = split_sequence(binance.df.to_numpy(), n_per_learn, n_per_predict)
 
     n_layers = 1
     n_nodes = 30
