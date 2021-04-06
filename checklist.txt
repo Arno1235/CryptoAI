@@ -4,5 +4,4 @@ check	neural_network.py
 check	extra_analysis.py
 
 interpret_data.py
-place_buy.py
 notify_user.py
