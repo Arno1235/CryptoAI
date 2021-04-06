@@ -64,7 +64,7 @@ class NeuralNetwork:
     """
     Fitting and Training Neural Network
     """
-    def trainNN(self, input_X, input_Y, epochs = 100, batch_size=128, validation_split=0.1):
+    def trainNN(self, input_X, input_Y, epochs = 10, batch_size=128, validation_split=0.1):
         return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, validation_split=validation_split)
     
     """
