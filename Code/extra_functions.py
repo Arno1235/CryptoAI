@@ -72,7 +72,6 @@ def convertToPercentages(df):
     return df
 
 def plotPrediction(preds):
-
     plt.plot(preds, label='Prediction')
     plt.show()
 
