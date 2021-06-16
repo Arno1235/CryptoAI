@@ -1,5 +1,4 @@
 TODO
-- check extra_functions.py
 - notify_user (keep log file)
 - interpret_data
 - write simulaiton code
@@ -8,6 +7,7 @@ TODO
 - optimize the Neural Network
 
 Doing
+- check extra_functions.py
 
 Review
 - Check binance.py
