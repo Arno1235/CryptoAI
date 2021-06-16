@@ -1,3 +1,4 @@
+# Extra Functions libraries
 import numpy as np
 import matplotlib.pyplot as plt
 plt.style.use("bmh")
@@ -5,9 +6,8 @@ import pandas as pd
 import datetime
 
 
-"""
-Splits the multivariate time sequence
-"""
+
+# Splits the multivariate time sequence
 def split_sequence(seq, n_per_learn, n_per_predict):
 
     # Creating a list for both variables
@@ -31,9 +31,7 @@ def split_sequence(seq, n_per_learn, n_per_predict):
     
     return np.array(input_X), np.array(input_Y)
 
-"""
-Plots the loss and accuracy for the training and testing data
-"""
+# Plots the loss and accuracy for the training and testing data
 def visualize_training_results(results):
     history = results.history
     plt.figure(figsize=(16,5))
@@ -54,6 +52,7 @@ def visualize_training_results(results):
     plt.ylabel('Accuracy')
     plt.show()
 
+# Returns scaled prediction
 def scalePrediction(prediction, df, close_scaler, fmt="%Y-%m-%d %H:%M:%S"):
     # Transforming the predicted values back to their original format
     prediction = close_scaler.inverse_transform(prediction)[0]
@@ -68,12 +67,14 @@ def scalePrediction(prediction, df, close_scaler, fmt="%Y-%m-%d %H:%M:%S"):
 # TODO
 def convertToPercentages(df):
     for i in range(1, len(df)):
-        df['close'].iloc[i] = (df['close'].iloc[i] - df['close'].iloc[i-1]) / df['close'].iloc[i-1]
+        df['close'].iloc[i] = (df['close'].iloc[i] - df['close'].iloc[0]) / df['close'].iloc[0]
     return df
 
+# Plots the predictions
 def plotPrediction(preds):
     plt.plot(preds, label='Prediction')
     plt.show()
+
 
 
 if __name__ == "__main__":
