@@ -1,3 +1,4 @@
+# Binance libraries
 from binance_mod.client import Client
 import os
 import pandas as pd
