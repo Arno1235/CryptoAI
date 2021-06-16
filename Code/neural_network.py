@@ -1,12 +1,19 @@
-# Neural Network library
+# Neural Network libraries
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout
-import pandas as pd
-import numpy as np
 
 
+
+# Nueral Network class
 class NeuralNetwork:
 
+    # Initializes the class
+    # n_layers: number of layers
+    # n_nodes; number of nodes
+    # n_per_learn: numper of periods to learn
+    # n_per_predict: number of periods to predict
+    # n_features: number of features
+    # activation: activation method
     def __init__(self, n_layers, n_nodes, n_per_learn, n_per_predict, n_features, activation="tanh"):
         self.n_layers = n_layers
         self.n_nodes = n_nodes
@@ -17,9 +24,7 @@ class NeuralNetwork:
 
         self.createNN()
     
-    """
-    Creating the Neural Network
-    """
+    # Creates the Neural Network
     def createNN(self):
         # Instatiating the model
         self.model = Sequential()
@@ -31,7 +36,7 @@ class NeuralNetwork:
                     input_shape=(self.n_per_learn, self.n_features)))
 
         # Hidden layers
-        self.layer_maker()
+        self.layerMaker()
 
         # Final Hidden layer
         self.model.add(LSTM(60, activation=self.activation))
@@ -45,11 +50,9 @@ class NeuralNetwork:
         # Compiling the data with selected specifications
         self.model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
 
-    """
-    Creates a specified number of hidden layers for an RNN
-    Optional: Adds regularization option - the dropout layer to prevent potential overfitting (if necessary)
-    """
-    def layer_maker(self, drop=None, d_rate=.5):
+    # Creates a specified number of hidden layers for an RNN
+    # Optional: Adds regularization option - the dropout layer to prevent potential overfitting (if necessary)    
+    def layerMaker(self, drop=None, d_rate=.5):
         # Creating the specified number of hidden layers with the specified number of nodes
         for x in range(1, self.n_layers+1):
             self.model.add(LSTM(self.n_nodes, activation=self.activation, return_sequences=True))
@@ -61,15 +64,11 @@ class NeuralNetwork:
             except:
                 pass
     
-    """
-    Fitting and Training Neural Network
-    """
+    # Fitting and Training of the Neural Network
     def trainNN(self, input_X, input_Y, epochs = 10, batch_size=128, validation_split=0.1):
         return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, validation_split=validation_split)
     
-    """
-    Predict Using Neural Network
-    """
+    # Predict Using Neural Network
     def predictionNN(self, input_data):
         # Predicting off of the most recent days from the original DF
         return self.model.predict(input_data)
