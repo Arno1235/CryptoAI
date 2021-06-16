@@ -74,5 +74,6 @@ class NeuralNetwork:
         return self.model.predict(input_data)
 
 
+
 if __name__ == "__main__":
     print("running neural_network")
