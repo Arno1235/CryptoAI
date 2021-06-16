@@ -1,5 +1,4 @@
 TODO
-- Check neural_network.py
 - check extra_functions.py
 - notify_user (keep log file)
 - interpret_data
@@ -12,5 +11,6 @@ Doing
 
 Review
 - Check binance.py
+- Check neural_network.py
 
 Tested
