@@ -68,6 +68,7 @@ def scalePrediction(prediction, df, close_scaler, fmt="%Y-%m-%d %H:%M:%S"):
 def convertToPercentages(df):
     for i in range(1, len(df)):
         df['close'].iloc[i] = (df['close'].iloc[i] - df['close'].iloc[0]) / df['close'].iloc[0]
+    print(df)
     return df
 
 # Plots the predictions
