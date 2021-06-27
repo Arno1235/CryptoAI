@@ -15,15 +15,16 @@ def predictSymbol(symbol, binance, showPlots=False):
 
     input_X, input_Y = split_sequence(coin.df.to_numpy(), n_per_learn, n_per_predict)
 
-    n_layers = 3 # 1
+    n_layers = 1 # 1
     n_nodes = 30 # 30
 
     neuralNetwork = NeuralNetwork(n_layers, n_nodes, n_per_learn, n_per_predict, coin.n_features)
-    result = neuralNetwork.trainNN(input_X, input_Y, epochs=20)
+    result = neuralNetwork.trainNN(input_X, input_Y, epochs=100)
     if showPlots: visualize_training_results(result)
 
     prediction = neuralNetwork.predictionNN(np.array(coin.df.tail(n_per_learn)).reshape(1, n_per_learn, coin.n_features))
     prediction = scalePrediction(prediction, coin.df, coin.close_scaler)
+    print(prediction)
     if showPlots: plotPrediction(prediction)
 
     prediction = convertToPercentages(prediction)
