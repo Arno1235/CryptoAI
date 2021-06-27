@@ -8,7 +8,7 @@ def predictSymbol(symbol, binance, showPlots=False):
 
     coin = Coin(symbol=symbol, binance=binance)
 
-    coin.getScaledData(hours_ago=10)
+    coin.getScaledData(hours_ago=12)
 
     n_per_learn = 90
     n_per_predict = 30
@@ -26,9 +26,7 @@ def predictSymbol(symbol, binance, showPlots=False):
     prediction = scalePrediction(prediction, coin.df, coin.close_scaler)
     if showPlots: plotPrediction(prediction)
 
-    # TODO add last datapoint of orignal data to prediciton
     prediction = convertToPercentages(prediction)
-    print(prediction)
     if showPlots: plotPrediction(prediction)
 
 if __name__ == "__main__":
