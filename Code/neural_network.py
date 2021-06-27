@@ -69,12 +69,12 @@ class NeuralNetwork:
     def trainNN(self, input_X, input_Y, epochs = 10, batch_size=128, validation_split=0.1):
         callbacks =[
             EarlyStopping(
-                monitor="acc",
-                min_delta=0.01,
-                patience=2,
+                monitor="accuracy",
+                min_delta=0,
+                patience=0,
                 verbose=0,
                 mode="auto",
-                baseline=0.08,
+                baseline=None,
                 restore_best_weights=False)
         ]
         return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, callbacks=callbacks, validation_split=validation_split)
