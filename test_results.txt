@@ -1,0 +1,3 @@
+hours_ago=12; n_per_learn = 180; n_per_predict = 60; n_layers = 1; n_nodes = 30; epochs=100;
+
+- accuracy: 0.1389	    16:00:00    27920.953125 -> 27758.88	    Error: 162.03 = 0.58%
