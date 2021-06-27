@@ -8,7 +8,7 @@ def predictSymbol(symbol, binance, showPlots=False):
 
     coin = Coin(symbol=symbol, binance=binance)
 
-    coin.getScaledData(hours_ago=1)
+    coin.getScaledData(hours_ago=10)
 
     n_per_learn = 90
     n_per_predict = 30
