@@ -64,11 +64,11 @@ def scalePrediction(prediction, df, close_scaler, fmt="%Y-%m-%d %H:%M:%S"):
                                             freq="1min"),
                         columns=[df.columns[0]])
 
-# TODO
+# Returns a table of the difference from the first value in percentages
 def convertToPercentages(df):
     for i in range(1, len(df)):
-        df['close'].iloc[i] = (df['close'].iloc[i] - df['close'].iloc[0]) / df['close'].iloc[0]
-    print(df)
+        df['close'].iloc[i] = 100 * (df['close'].iloc[i] - df['close'].iloc[0]) / df['close'].iloc[0] # Difference in percentage
+    df['close'].iloc[0] = 0
     return df
 
 # Plots the predictions
