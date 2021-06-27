@@ -10,16 +10,16 @@ def predictSymbol(symbol, binance, showPlots=False):
 
     coin.getScaledData(hours_ago=12)
 
-    n_per_learn = 90
-    n_per_predict = 30
+    n_per_learn = 180 # 90
+    n_per_predict = 60 # 30
 
     input_X, input_Y = split_sequence(coin.df.to_numpy(), n_per_learn, n_per_predict)
 
-    n_layers = 1
-    n_nodes = 30
+    n_layers = 3 # 1
+    n_nodes = 30 # 30
 
     neuralNetwork = NeuralNetwork(n_layers, n_nodes, n_per_learn, n_per_predict, coin.n_features)
-    result = neuralNetwork.trainNN(input_X, input_Y)
+    result = neuralNetwork.trainNN(input_X, input_Y, epochs=20)
     if showPlots: visualize_training_results(result)
 
     prediction = neuralNetwork.predictionNN(np.array(coin.df.tail(n_per_learn)).reshape(1, n_per_learn, coin.n_features))
@@ -32,7 +32,7 @@ def predictSymbol(symbol, binance, showPlots=False):
 if __name__ == "__main__":
     print("running main")
 
-    symbol_list = ['BTCUSDT']
+    symbol_list = ['BTCEUR']
 
     binance = Binance()
 
