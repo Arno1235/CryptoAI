@@ -7,10 +7,11 @@ TODO
 - optimize the Neural Network
 
 Doing
-- check extra_functions.py
+
 
 Review
 - Check binance.py
 - Check neural_network.py
+- check extra_functions.py
 
 Tested
