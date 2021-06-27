@@ -1,6 +1,7 @@
 # Neural Network libraries
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout
+from keras.callbacks import EarlyStopping
 
 
 
@@ -66,7 +67,17 @@ class NeuralNetwork:
     
     # Fitting and Training of the Neural Network
     def trainNN(self, input_X, input_Y, epochs = 10, batch_size=128, validation_split=0.1):
-        return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, validation_split=validation_split)
+        callbacks =[
+            EarlyStopping(
+                monitor="acc",
+                min_delta=0.01,
+                patience=2,
+                verbose=0,
+                mode="auto",
+                baseline=0.08,
+                restore_best_weights=False)
+        ]
+        return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, callbacks=callbacks, validation_split=validation_split)
     
     # Predict Using Neural Network
     def predictionNN(self, input_data):
