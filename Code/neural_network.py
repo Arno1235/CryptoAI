@@ -88,7 +88,8 @@ class NeuralNetwork:
                 restore_best_weights=False)
         ]
         callbacks.append(myCallback())
-        return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, callbacks=callbacks, validation_split=validation_split)
+        #return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, callbacks=callbacks, validation_split=validation_split)
+        return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, validation_split=validation_split)
     
     # Predict Using Neural Network
     def predictionNN(self, input_data):
