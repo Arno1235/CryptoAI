@@ -1,5 +1,4 @@
 TODO
-- notify_user (keep log file)
 - interpret_data
 - write simulaiton code
 - main.py (keep track of the users portfolio)
@@ -7,7 +6,7 @@ TODO
 - optimize the Neural Network
 
 Doing
-
+- notify_user (keep log file)
 
 Review
 - Check binance.py
