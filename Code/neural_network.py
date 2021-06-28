@@ -7,9 +7,9 @@ import datetime
 TIME_0 = datetime.datetime.now()
 
 # Training thresholds
-ACCURACY_THRESHOLD = 0.25 # Minimum amount of accuracy
+ACCURACY_THRESHOLD = 0.10 # Minimum amount of accuracy
 TIME_THRESHOLD = 5 * 60 # Maximum amount of time to train the Neural Network in seconds
-PATIENCE_THRESHOLD = 10 # Maximum amount of epochs with no improvement
+PATIENCE_THRESHOLD = 20 # Maximum amount of epochs with no improvement
 
 # Stops training if accuracy reaches an accuracy threshold or if training takes longer than a time threshold
 class myCallback(Callback):
