@@ -6,11 +6,12 @@ TODO
 - optimize the Neural Network
 
 Doing
-- notify_user (keep log file)
+
 
 Review
 - Check binance.py
 - Check neural_network.py
 - check extra_functions.py
+- notify_user (keep log file)
 
 Tested
