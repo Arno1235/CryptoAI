@@ -1,12 +1,11 @@
 TODO
-- interpret_data
 - write simulaiton code
 - main.py (keep track of the users portfolio)
 - execute buys and sells with binance
 - optimize the Neural Network
 
 Doing
-
+- interpret_data
 
 Review
 - Check binance.py
