@@ -2,14 +2,24 @@
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout
 from keras.callbacks import EarlyStopping, Callback
+import datetime
 
-ACCURACY_THRESHOLD = 0.25
+TIME_0 = datetime.datetime.now()
 
-# Stops training if accuracy reaches an accuracy threshold
+# Training thresholds
+ACCURACY_THRESHOLD = 0.25 # Minimum amount of accuracy
+TIME_THRESHOLD = 30 # Maximum amount of time to train the Neural Network in seconds
+PATIENCE_THRESHOLD = 10 # Maximum amount of epochs with no improvement
+
+# Stops training if accuracy reaches an accuracy threshold or if training takes longer than a time threshold
 class myCallback(Callback):
     def on_epoch_end(self, epoch, logs={}):
         if(logs.get('accuracy') > ACCURACY_THRESHOLD):
             print("\nReached %2.2f%% accuracy, so stopping training" %(ACCURACY_THRESHOLD*100))
+            self.model.stop_training = True
+            
+        if ((datetime.datetime.now()-TIME_0).total_seconds() > TIME_THRESHOLD):
+            print("\nTraining took longer than %i, so stopping training" %(TIME_THRESHOLD))
             self.model.stop_training = True
 
 
@@ -81,15 +91,15 @@ class NeuralNetwork:
             EarlyStopping(
                 monitor="accuracy",
                 min_delta=0,
-                patience=10,
+                patience=PATIENCE_THRESHOLD,
                 verbose=0,
                 mode="auto",
                 baseline=None,
                 restore_best_weights=False)
         ]
         callbacks.append(myCallback())
-        #return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, callbacks=callbacks, validation_split=validation_split)
-        return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, validation_split=validation_split)
+        TIME_0 = datetime.datetime.now()
+        return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, callbacks=callbacks, validation_split=validation_split)
     
     # Predict Using Neural Network
     def predictionNN(self, input_data):
