@@ -3,14 +3,17 @@ TODO
 - main.py (keep track of the users portfolio)
 - execute buys and sells with binance
 - optimize the Neural Network
+- optimize data interpretation
 
 Doing
-- interpret_data
+- test the code
 
 Review
 - Check binance.py
 - Check neural_network.py
 - check extra_functions.py
 - notify_user (keep log file)
+- interpret_data
+- write test code
 
 Tested
