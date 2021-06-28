@@ -1,10 +1,11 @@
-from binance import *
-from neural_network import *
+from binance import Binance, Coin
+from neural_network import NeuralNetwork
 from extra_functions import *
+from notify_user import notifyUser, Log
 
 import numpy as np
 
-def predictSymbol(symbol, binance, showPlots=False):
+def predictSymbol(symbol, binance, showPlots=False, log=Log()):
 
     coin = Coin(symbol=symbol, binance=binance)
 
@@ -24,11 +25,13 @@ def predictSymbol(symbol, binance, showPlots=False):
 
     prediction = neuralNetwork.predictionNN(np.array(coin.df.tail(n_per_learn)).reshape(1, n_per_learn, coin.n_features))
     prediction = scalePrediction(prediction, coin.df, coin.close_scaler)
-    print(prediction)
+    # print(prediction)
     if showPlots: plotPrediction(prediction)
 
     prediction = convertToPercentages(prediction)
     if showPlots: plotPrediction(prediction)
+
+    log.save()
 
 if __name__ == "__main__":
     print("running main")
@@ -36,8 +39,9 @@ if __name__ == "__main__":
     symbol_list = ['BTCEUR']
 
     binance = Binance()
+    log = Log()
 
     while True:
         for symbol in symbol_list:
-            predictSymbol(symbol, binance, showPlots=True)
+            predictSymbol(symbol, binance, showPlots=True, log=log)
         break
