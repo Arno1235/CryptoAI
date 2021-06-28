@@ -19,7 +19,7 @@ def predictSymbol(symbol, binance, showPlots=False):
     n_nodes = 30 # 30
 
     neuralNetwork = NeuralNetwork(n_layers, n_nodes, n_per_learn, n_per_predict, coin.n_features)
-    result = neuralNetwork.trainNN(input_X, input_Y, epochs=100)
+    result = neuralNetwork.trainNN(input_X, input_Y, epochs=120)
     if showPlots: visualize_training_results(result)
 
     prediction = neuralNetwork.predictionNN(np.array(coin.df.tail(n_per_learn)).reshape(1, n_per_learn, coin.n_features))
