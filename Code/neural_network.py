@@ -1,7 +1,16 @@
 # Neural Network libraries
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Dropout
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping, Callback
+
+ACCURACY_THRESHOLD = 0.25
+
+# Stops training if accuracy reaches an accuracy threshold
+class myCallback(Callback):
+    def on_epoch_end(self, epoch, logs={}):
+        if(logs.get('accuracy') > ACCURACY_THRESHOLD):
+            print("\nReached %2.2f%% accuracy, so stopping training" %(ACCURACY_THRESHOLD*100))
+            self.model.stop_training = True
 
 
 
@@ -67,16 +76,18 @@ class NeuralNetwork:
     
     # Fitting and Training of the Neural Network
     def trainNN(self, input_X, input_Y, epochs = 10, batch_size=128, validation_split=0.1):
+        # Stop training if there is no improvement for 10 consecutive epochs
         callbacks =[
             EarlyStopping(
                 monitor="accuracy",
                 min_delta=0,
-                patience=0,
+                patience=10,
                 verbose=0,
                 mode="auto",
                 baseline=None,
                 restore_best_weights=False)
         ]
+        callbacks.append(myCallback())
         return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, callbacks=callbacks, validation_split=validation_split)
     
     # Predict Using Neural Network
