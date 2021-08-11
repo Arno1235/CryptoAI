@@ -14,6 +14,8 @@ PATIENCE_THRESHOLD = 20 # Maximum amount of epochs with no improvement
 # Stops training if accuracy reaches an accuracy threshold or if training takes longer than a time threshold
 class myCallback(Callback):
     def on_epoch_end(self, epoch, logs={}):
+        global TIME_0
+
         if(logs.get('accuracy') > ACCURACY_THRESHOLD):
             print("\nReached %2.2f%% accuracy, so stopping training" %(ACCURACY_THRESHOLD*100))
             self.model.stop_training = True
@@ -98,6 +100,7 @@ class NeuralNetwork:
                 restore_best_weights=False)
         ]
         callbacks.append(myCallback())
+        global TIME_0
         TIME_0 = datetime.datetime.now()
         return self.model.fit(input_X, input_Y, epochs=epochs, batch_size=batch_size, callbacks=callbacks, validation_split=validation_split)
     
