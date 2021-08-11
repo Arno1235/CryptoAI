@@ -1,5 +1,5 @@
 from binance import Binance, Coin
-from neural_network import NeuralNetwork, ACCURACY_THRESHOLD
+from neural_network import NeuralNetwork, ACCURACY_THRESHOLD, TIME_THRESHOLD
 from extra_functions import *
 from notify_user import notifyUser, Log
 from interpret_data import minmax_interpration
@@ -25,7 +25,7 @@ def predictSymbol(symbol, binance, showPlots=False, log=Log()):
     n_nodes = 30 # 30
 
     neuralNetwork = NeuralNetwork(n_layers, n_nodes, n_per_learn, n_per_predict, coin.n_features)
-    result = neuralNetwork.trainNN(input_X, input_Y, epochs=5000)
+    result = neuralNetwork.trainNN(input_X, input_Y, epochs=1000)
     if showPlots: visualize_training_results(result)
 
     prediction = neuralNetwork.predictionNN(np.array(coin.df.tail(n_per_learn)).reshape(1, n_per_learn, coin.n_features))
@@ -62,5 +62,6 @@ if __name__ == "__main__":
             time0 = datetime.datetime.now()
             predictSymbol(symbol=symbol, binance=binance, showPlots=False, log=log)
             timediff = (datetime.datetime.now() - time0).total_seconds()
-            if timediff > 0:
-                time.sleep(timediff)
+            if timediff < TIME_THRESHOLD:
+                print("Sleeping for %i seconds." %(TIME_THRESHOLD - timediff))
+                time.sleep(TIME_THRESHOLD - timediff)
