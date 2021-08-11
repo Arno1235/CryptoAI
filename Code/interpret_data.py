@@ -1,6 +1,6 @@
 # Threshold variables
-MIN_THRESHOLD = -2 # Maximum percentage the coin can fall
-MAX_THRESHOLD = 5 # Minimum percentage the coin has to rise
+MIN_THRESHOLD = -1 # Maximum percentage the coin can fall
+MAX_THRESHOLD = 1 # Minimum percentage the coin has to rise
 
 # Margin variables
 MIN_MARGIN = 1
