@@ -1,7 +1,8 @@
 from binance import Binance, Coin
 from neural_network import NeuralNetwork, ACCURACY_THRESHOLD, TIME_THRESHOLD
 from extra_functions import *
-from notify_user import notifyUser, Log
+from notify_user import notifyUser
+from log import Log
 from interpret_data import minmax_interpration
 
 import datetime
@@ -10,9 +11,7 @@ import numpy as np
 
 
 
-def predictSymbol(symbol, binance, showPlots=False, log=Log()):
-
-    coin = Coin(symbol=symbol, binance=binance)
+def predictCoin(coin, showPlots=False, log=Log()):
 
     coin.getScaledData(hours_ago=12)
 
@@ -30,7 +29,6 @@ def predictSymbol(symbol, binance, showPlots=False, log=Log()):
 
     prediction = neuralNetwork.predictionNN(np.array(coin.df.tail(n_per_learn)).reshape(1, n_per_learn, coin.n_features))
     prediction = scalePrediction(prediction, coin.df, coin.close_scaler)
-    # print(prediction)
     if showPlots: plotPrediction(prediction)
 
     first_value = prediction['close'].iloc[0]
@@ -40,12 +38,16 @@ def predictSymbol(symbol, binance, showPlots=False, log=Log()):
 
     acc = result.history['accuracy'][-1]
     
+    # if acc > ACCURACY_THRESHOLD:
+    #     interpretation = minmax_interpration(prediction=prediction_in_percentages, first_value=first_value)
+    #     if interpretation != False:
+    #         min_sell, max_sell = interpretation
+    #         notifyUser("You should buy %s and sell at %f and %f, I am %f sure." %(symbol, min_sell, max_sell, acc))
+    #         log.write("TEST: buy %s and sell at %f and %f, accuracy = %f" %(symbol, min_sell, max_sell, acc))
+
     if acc > ACCURACY_THRESHOLD:
-        interpretation = minmax_interpration(prediction=prediction_in_percentages, first_value=first_value)
-        if interpretation != False:
-            min_sell, max_sell = interpretation
-            notifyUser("You should buy %s and sell at %f and %f, I am %f sure." %(symbol, min_sell, max_sell, acc))
-            log.write("TEST: buy %s and sell at %f and %f, accuracy = %f" %(symbol, min_sell, max_sell, acc))
+        min, max = minmax_interpration(prediction=prediction_in_percentages, first_value=first_value)
+        log.write([symbol, min, max])
 
     log.save()
 
@@ -55,12 +57,16 @@ if __name__ == "__main__":
     symbol_list = ['BTCEUR', 'DOGEEUR', 'LTCEUR', 'VETEUR', 'ADAEUR', 'ETHEUR']
 
     binance = Binance()
-    log = Log()
+
+    coin_list = []
+    for symbol in symbol_list:
+        coin = Coin(symbol=symbol, binance=binance, log=Log(symbol))
+        coin_list.append(coin)
 
     while True:
-        for symbol in symbol_list:
+        for coin in coin_list:
             time0 = datetime.datetime.now()
-            predictSymbol(symbol=symbol, binance=binance, showPlots=False, log=log)
+            predictCoin(coin=coin, binance=binance, showPlots=False, log=log)
             timediff = (datetime.datetime.now() - time0).total_seconds()
             if timediff < TIME_THRESHOLD:
                 print("Sleeping for %i seconds." %(TIME_THRESHOLD - timediff))

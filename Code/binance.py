@@ -1,4 +1,5 @@
 # Binance libraries
+from log import Log
 from binance_mod.client import Client
 import os
 import pandas as pd
@@ -62,9 +63,10 @@ class Binance:
 class Coin:
 
     # Initializes the class
-    def __init__(self, symbol, binance):
+    def __init__(self, symbol, binance, log=Log()):
         self.symbol = symbol
         self.binance = binance
+        self.log = log
 
         # Data columns
         self.org_columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time', 'quote_av', 'trades', 'tb_base_av', 'tb_quote_av', 'ignore']

@@ -12,6 +12,9 @@ def minmax_interpration(prediction, first_value):
     min = prediction['close'].min()
     max = prediction['close'].max()
 
+    # TEST CODE
+    return min, max
+
     if (min > MIN_THRESHOLD and max > MAX_THRESHOLD):
         return buysell_values(min=min, max=max, first_value=first_value)
     
